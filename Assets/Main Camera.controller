@@ -76,7 +76,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: New Animation
-  m_Speed: 0.3
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -84,7 +84,7 @@ AnimatorState:
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 1
+  m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
@@ -206,7 +206,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102016964579989682}
-    m_Position: {x: 200, y: 0, z: 0}
+    m_Position: {x: 216, y: -60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102653631242451164}
     m_Position: {x: 444, y: 0, z: 0}
