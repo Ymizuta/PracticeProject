@@ -57,7 +57,12 @@ public class ObjCreateEditor : EditorWindow{
         }
         EditorGUILayout.Space();
 
-        
+        ///マップエディター
+
+        if (GUILayout.Button("マップエディター"))
+        {
+        }
+
         ///*
         // *マップ 
         // */
@@ -86,9 +91,9 @@ public class ObjCreateEditor : EditorWindow{
         //    DrawGridLine(r);
         //}
         //GUILayout.EndHorizontal();    
-}
+    }
 
-private void DrawGridLine(Rect r)
+    private void DrawGridLine(Rect r)
     {
         // grid
         Handles.color = new Color(1f, 1f, 1f, 0.5f);
