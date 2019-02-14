@@ -11,6 +11,7 @@ public class MapCreateEditor : EditorWindow {
     float h = 50.0f;            //グリッドの高さ
     int number_of_grid_ = 35;
     Rect[] rect_list_;
+    bool[] is_selected_rect_;
 
     private static EditorWindow parent_window_;
 
@@ -24,6 +25,7 @@ public class MapCreateEditor : EditorWindow {
     void Init()
     {
         DrawGrid();
+        is_selected_rect_ = new bool[number_of_grid_];
     }
 
     private void OnGUI()
@@ -36,18 +38,30 @@ public class MapCreateEditor : EditorWindow {
 
         //DrawGrid();
 
-        Texture2D tex = ((Texture2D)Resources.Load("Textures/Sphere"));
-        Rect rr = new Rect(0, 0, 50, 50);
+        //Texture2D tex = ((Texture2D)Resources.Load("Textures/Sphere"));
+        //Rect rr = new Rect(0, 0, 50, 50);
         //GUI.DrawTexture(rr, tex, ScaleMode.ScaleToFit, true, 0);
-        GUI.DrawTexture(rect_list_[0], tex, ScaleMode.ScaleToFit, true, 0);
-        DrawGridLine(rr);
-        Debug.Log(tex);
+        //DrawGridLine(rr);
+        //Debug.Log(tex);
 
         Event e = Event.current;
         if (e.type == EventType.MouseDown)
         {
             InsertTexture();
         }
+
+        //データに出力して、常に描画させる必要がある
+
+        //とりあえず暫定処理
+        for(int i = 0;i<number_of_grid_;i++)
+        {
+            if (is_selected_rect_[i] == true)
+            {
+                Texture2D tex = ((Texture2D)Resources.Load("Textures/Sphere"));
+                GUI.DrawTexture(rect_list_[i], tex, ScaleMode.ScaleToFit, true, 0);
+            }
+        }
+
     }
 
     private void DrawGrid()
@@ -121,6 +135,7 @@ public class MapCreateEditor : EditorWindow {
                         if (((ObjCreateEditor)parent_window_).selected_tex_ != null)
                         {
                             Debug.Log("Rect:" + i + "をクリックしたよ！");
+                            is_selected_rect_[i] = true;
                             GUI.DrawTexture(rect_list_[i], ((ObjCreateEditor)parent_window_).selected_tex_);
                         }
                     }
