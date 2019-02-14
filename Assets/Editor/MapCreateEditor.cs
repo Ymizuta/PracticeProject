@@ -142,7 +142,7 @@ public class MapCreateEditor : EditorWindow {
 
     private void OutputFile()
     {
-        string path = "Assets/Output/output_file.txt";
+        string path = "Assets/Resources/Output/output_file.txt";
         //FileInfo fileInfo = new FileInfo(path);
         StreamWriter sw = new StreamWriter(path,false);
         sw.WriteLine(GetMapStrFormat());
@@ -153,6 +153,7 @@ public class MapCreateEditor : EditorWindow {
         EditorUtility.DisplayDialog("MapCreater", "ファイルを出力しました。\n" + path, "ok");
     }
 
+    //マップデータをStringデータにして返す
     private string GetMapStrFormat()
     {
         string result = "";
@@ -161,19 +162,33 @@ public class MapCreateEditor : EditorWindow {
         {
             result += map_data_list_[i];
             //カンマを追記
-            if (i + 1 % map_size != 0)
+            if ((i + 1 )% map_size != 0)
             {
                 result += ",";
             }
+
             //改行
-            if (i + 1 % map_size  == 0)
+            if ((i + 1 )% map_size  == 0)
             {
+                Debug.Log("aaa");
                 result += "\n";
             }
         }
         return result;
     }
 
+    /*
+     * マップデータからオブジェクトをビューに生成
+     */ 
+    private void CreateObjectFromMapData()
+    {
+        TextAsset text_asset = new TextAsset();
+        text_asset = Resources.Load("Output/output.txt") as TextAsset;
+        string str_map_data = text_asset.text;
+
+
+
+    }
 
     /*
      * グリッド線の描画
