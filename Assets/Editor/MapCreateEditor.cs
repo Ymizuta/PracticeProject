@@ -14,6 +14,7 @@ public class MapCreateEditor : EditorWindow {
     Rect[] rect_list_;
     string[] map_data_list_;    //位置情報を格納
 
+    List<string[]> obj_str_list;
 
     private static EditorWindow parent_window_;
 
@@ -58,7 +59,7 @@ public class MapCreateEditor : EditorWindow {
         EditorGUILayout.Space();
         if (GUILayout.Button("ステージ生成"))
         {
-
+            CreateObjectFromMapData();
         }
         EditorGUILayout.Space();
         if (GUILayout.Button("ファイル出力"))
@@ -170,7 +171,6 @@ public class MapCreateEditor : EditorWindow {
             //改行
             if ((i + 1 )% map_size  == 0)
             {
-                Debug.Log("aaa");
                 result += "\n";
             }
         }
@@ -179,15 +179,31 @@ public class MapCreateEditor : EditorWindow {
 
     /*
      * マップデータからオブジェクトをビューに生成
+     * ※後でファイルから吸い出す処理と、生成する処理を分けること
      */ 
     private void CreateObjectFromMapData()
     {
+        //テキストファイルのカンマで区切られた文字列を格納するリスト
+        obj_str_list = new List<string[]>();
+
+        //テキストファイルからreaderにデータを取得
         TextAsset text_asset = new TextAsset();
-        text_asset = Resources.Load("Output/output.txt") as TextAsset;
-        string str_map_data = text_asset.text;
+        text_asset = Resources.Load("Output/output_file") as TextAsset;
+        //string str_map_data = text_asset.text;
+        var reader = new StringReader(text_asset.text);
 
-
-
+        //readerから取得したデータをリストに格納する
+        while (reader.Peek() >  -1)
+        {
+            //行を取り出し、カンマで区切られた文字列をリストに格納
+            var line_data = reader.ReadLine();
+            var obj_str = line_data.Split(',');
+            //各行のカンマで区切られた文字列をリストに格納
+            foreach (var s in obj_str)
+            {
+                obj_str_list.Add(obj_str);
+            }
+        }
     }
 
     /*
