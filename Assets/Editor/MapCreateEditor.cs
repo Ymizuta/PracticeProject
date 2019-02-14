@@ -11,7 +11,8 @@ public class MapCreateEditor : EditorWindow {
     float h = 50.0f;            //グリッドの高さ
     int number_of_grid_ = 35;
     Rect[] rect_list_;
-    bool[] is_selected_rect_;
+    string[] map_data_list_;    //位置情報を格納
+
 
     private static EditorWindow parent_window_;
 
@@ -24,8 +25,8 @@ public class MapCreateEditor : EditorWindow {
 
     void Init()
     {
+        map_data_list_ = new string[number_of_grid_];
         DrawGrid();
-        is_selected_rect_ = new bool[number_of_grid_];
     }
 
     private void OnGUI()
@@ -36,32 +37,22 @@ public class MapCreateEditor : EditorWindow {
             DrawGridLine(r);
         }
 
-        //DrawGrid();
+        InsertTexture();
 
-        //Texture2D tex = ((Texture2D)Resources.Load("Textures/Sphere"));
-        //Rect rr = new Rect(0, 0, 50, 50);
-        //GUI.DrawTexture(rr, tex, ScaleMode.ScaleToFit, true, 0);
-        //DrawGridLine(rr);
-        //Debug.Log(tex);
-
-        Event e = Event.current;
-        if (e.type == EventType.MouseDown)
-        {
-            InsertTexture();
-        }
-
-        //データに出力して、常に描画させる必要がある
-
-        //とりあえず暫定処理
         for(int i = 0;i<number_of_grid_;i++)
         {
-            if (is_selected_rect_[i] == true)
+            if (map_data_list_[i] != "")
             {
-                Texture2D tex = ((Texture2D)Resources.Load("Textures/Sphere"));
+                Texture2D tex = ((Texture2D)Resources.Load("Textures/"+map_data_list_[i]));
                 GUI.DrawTexture(rect_list_[i], tex, ScaleMode.ScaleToFit, true, 0);
             }
         }
 
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("リセット"))
+        {
+            DrawGrid();
+        }
     }
 
     private void DrawGrid()
@@ -91,22 +82,14 @@ public class MapCreateEditor : EditorWindow {
                 GUILayout.BeginHorizontal();
             }
 
-            //テスト用コード
-            Texture2D tex = ((Texture2D)Resources.Load("Textures/Sphere"));
+            /*
+             * Rectを配列に格納・mapデータ配列に格納
+             */ 
             rect_list_[i] = new Rect(new Vector2(x, y), new Vector2(w, h));
-            //GUI.DrawTexture(rect_list_[i], tex, ScaleMode.ScaleToFit, true, 0);
-            //DrawGridLine(rect_list_[i]);
-            //テスト用コード
-
-            //リリース時に復活
-            //rect_list_[i] = new Rect(new Vector2(x, y), new Vector2(w, h));
-            //rect_poz_list_[i,i] = new Vector2(x,y);
+            map_data_list_[i] = "";
 
             //次のRectの位置を計算
             x += w;
-
-            //リリース時に復活
-            //DrawGridLine(rect_list_[i]);
         }
         GUILayout.EndHorizontal();
     }
@@ -116,13 +99,13 @@ public class MapCreateEditor : EditorWindow {
      */
     void InsertTexture()
     {
-        //Event e = Event.current;
-        //if (e.type == EventType.MouseDown)
-        //{
         /*
          * クリックしたRectの位置を検索
          */
-        Vector2 mouse_poz = Event.current.mousePosition;
+        Event e = Event.current;
+        if (e.type == EventType.MouseDown)
+        {
+            Vector2 mouse_poz = Event.current.mousePosition;
             for (int i = 0; i < number_of_grid_; i++)
             {
                 //クリックした位置のx座標の位置がRectの位置に該当するかを検索
@@ -135,13 +118,12 @@ public class MapCreateEditor : EditorWindow {
                         if (((ObjCreateEditor)parent_window_).selected_tex_ != null)
                         {
                             Debug.Log("Rect:" + i + "をクリックしたよ！");
-                            is_selected_rect_[i] = true;
-                            GUI.DrawTexture(rect_list_[i], ((ObjCreateEditor)parent_window_).selected_tex_);
+                            map_data_list_[i] = ((ObjCreateEditor)parent_window_).selected_tex_.name;
                         }
                     }
                 }
             }
-        //}
+        }
     }
 
     /*
