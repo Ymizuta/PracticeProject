@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 public class MapCreateEditor : EditorWindow {
 
@@ -52,6 +53,17 @@ public class MapCreateEditor : EditorWindow {
         if (GUILayout.Button("リセット"))
         {
             DrawGrid();
+        }
+
+        EditorGUILayout.Space();
+        if (GUILayout.Button("ステージ生成"))
+        {
+
+        }
+        EditorGUILayout.Space();
+        if (GUILayout.Button("ファイル出力"))
+        {
+            OutputFile();
         }
     }
 
@@ -125,6 +137,43 @@ public class MapCreateEditor : EditorWindow {
             }
         }
     }
+
+    // ファイルで出力
+
+    private void OutputFile()
+    {
+        string path = "Assets/Output/output_file.txt";
+        //FileInfo fileInfo = new FileInfo(path);
+        StreamWriter sw = new StreamWriter(path,false);
+        sw.WriteLine(GetMapStrFormat());
+        sw.Flush();
+        sw.Close();
+
+        // 完了ポップアップ
+        EditorUtility.DisplayDialog("MapCreater", "ファイルを出力しました。\n" + path, "ok");
+    }
+
+    private string GetMapStrFormat()
+    {
+        string result = "";
+        int map_size = 7;
+        for (int i = 0; i < number_of_grid_; i++)
+        {
+            result += map_data_list_[i];
+            //カンマを追記
+            if (i + 1 % map_size != 0)
+            {
+                result += ",";
+            }
+            //改行
+            if (i + 1 % map_size  == 0)
+            {
+                result += "\n";
+            }
+        }
+        return result;
+    }
+
 
     /*
      * グリッド線の描画
