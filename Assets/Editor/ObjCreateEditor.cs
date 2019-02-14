@@ -4,19 +4,16 @@ using UnityEngine;
 using UnityEditor;
 
 public class ObjCreateEditor : EditorWindow{
+
     private float x_poz_;
     private float y_poz_;
     private float z_poz_;
     private Vector3 instantiate_poz_;
     private Object instantiated_object_;
+    private Texture tex_;
 
-    //private int number_of_instances_;
-    //private float min_x_;
-    //private float max_x_;
-    //private float min_y_;
-    //private float max_y_;
-    //private float min_z_;
-    //private float max_z_;
+    private GameObject selected_object_;
+    public Texture selected_tex_;
 
     [UnityEditor.MenuItem("Editor/ObjCreateEditor")]
     private static void Create()
@@ -25,6 +22,24 @@ public class ObjCreateEditor : EditorWindow{
     }
 
     private void OnGUI()
+    {
+        //ObjCreate();
+
+        DrawImgs();
+
+        /*
+         * マップエディター 
+         */
+        if (GUILayout.Button("マップエディター"))
+        {
+            MapCreateEditor.ShowWindow(this);
+        }
+
+        //EditorGUILayout.Space();
+
+    }
+
+    private void ObjCreate()
     {
         GUILayout.Label("個別オブジェクト生成");
         using (new EditorGUILayout.HorizontalScope())
@@ -52,67 +67,48 @@ public class ObjCreateEditor : EditorWindow{
         {
             instantiate_poz_.x = x_poz_;
             instantiate_poz_.y = y_poz_;
-            instantiate_poz_.z = z_poz_; 
-            GameObject new_object = Instantiate(instantiated_object_,instantiate_poz_,Quaternion.identity) as GameObject;
+            instantiate_poz_.z = z_poz_;
+            GameObject new_object = Instantiate(instantiated_object_, instantiate_poz_, Quaternion.identity) as GameObject;
         }
         EditorGUILayout.Space();
-
-        ///マップエディター
-
-        if (GUILayout.Button("マップエディター"))
-        {
-        }
-
-        ///*
-        // *マップ 
-        // */
-        //float default_x = 0.0f;
-        //float x = 0.0f;
-        //float y = 0.0f;
-        //float w = 50.0f;
-        //float maxw = 300.0f;
-        //float h = 50.0f;
-
-        //GUILayout.BeginHorizontal();
-        //for (int i = 0; i <= 10; i++)
-        //{
-        //    x += w;
-        //    if (x > maxw)
-        //    {
-        //        x = default_x;
-        //        y += h;
-        //        GUILayout.EndHorizontal();
-        //    }
-        //    if (x == default_x)
-        //    {
-        //        GUILayout.BeginHorizontal();
-        //    }
-        //    Rect r = new Rect(new Vector2(x,y),new Vector2(w,h));
-        //    DrawGridLine(r);
-        //}
-        //GUILayout.EndHorizontal();    
     }
 
-    private void DrawGridLine(Rect r)
+    void DrawImgs()
     {
-        // grid
-        Handles.color = new Color(1f, 1f, 1f, 0.5f);
-        // upper line
-        Handles.DrawLine(
-            new Vector2(r.position.x, r.position.y),
-            new Vector2(r.position.x + r.size.x, r.position.y));
-        // bottom line
-        Handles.DrawLine(
-            new Vector2(r.position.x, r.position.y + r.size.y),
-            new Vector2(r.position.x + r.size.x, r.position.y + r.size.y));
-        // left line
-        Handles.DrawLine(
-            new Vector2(r.position.x, r.position.y),
-            new Vector2(r.position.x, r.position.y + r.size.y));
-        // right line
-        Handles.DrawLine(
-            new Vector2(r.position.x + r.size.x, r.position.y),
-            new Vector2(r.position.x + r.size.x, r.position.y + r.size.y));
+        /*
+         * 設置するオブジェクを画像で表示する
+         */
+        float default_x_ = 0.0f;             //並んでいるグリッドの幅の合計の計算用（初期値）
+        float x_ = 0.0f;                     //並んでいるグリッドの幅の合計の計算用
+        float y_ = 0.0f;                     //並んでいるグリッドの高さの合計の計算用
+        float img_width_ = 50.0f;           //グリッドの幅
+        float max_size_x_ = 300.0f;         //グリッドの横幅の最大値
+        float img_height_ = 50.0f;          //グリッドの高さ
+        Object[] tex_list_;
+
+        tex_list_ = Resources.LoadAll("Textures", typeof(Texture));
+        x_ = default_x_;
+
+        GUILayout.BeginHorizontal();
+        //foreachのほうが良い？
+        for (int i = 0; i < tex_list_.Length; i++)
+        {
+            if (x_ > max_size_x_)
+            {
+                x_ = default_x_;
+                y_ += img_height_;
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+            }
+            if (GUILayout.Button((Texture)tex_list_[i], GUILayout.MaxWidth(img_width_), GUILayout.MaxHeight(img_height_)))
+            {                
+                selected_object_ = Resources.Load("Prefab/"+tex_list_[i].name) as GameObject;
+                selected_tex_ = ((Texture)Resources.Load("Textures/"+tex_list_[i].name));
+            }
+            //次の画像の位置を計算
+            x_ += img_width_;
+        }
+        GUILayout.EndHorizontal();
     }
 }
 
