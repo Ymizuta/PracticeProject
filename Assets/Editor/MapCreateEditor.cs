@@ -10,14 +10,11 @@ public class MapCreateEditor : EditorWindow {
     float w = 50.0f;            //グリッドの幅
     float mapsize_x_ = 300.0f;  //グリッドの横幅の最大値
     float h = 50.0f;            //グリッドの高さ
-    int number_of_grid_ = 35;
-    Rect[] rect_list_;
-    string[] map_data_list_;    //位置情報を格納
+    int number_of_grid_ = 35;   //グリッドの総数
+    Rect[] rect_list_;          //生成したグリッドを格納
+    string[] map_data_list_;    //ファイル出力用のstring型配列
 
-    List<string> obj_str_list;  //不要？
-
-    public Vector3 spaceScale = new Vector3(5.0f,0f,-5.0f);  //スケール
-
+    public Vector3 spaceScale;//スケール
 
     private static EditorWindow parent_window_;
 
@@ -33,6 +30,8 @@ public class MapCreateEditor : EditorWindow {
         //グリッド数を計算
         number_of_grid_ = ((ObjCreateEditor)parent_window_).CountOfGridX
             * ((ObjCreateEditor)parent_window_).CountOfGridY;
+        //スケールを初期化
+        spaceScale = new Vector3(((ObjCreateEditor)parent_window_).SelectedScale,0,((ObjCreateEditor)parent_window_).SelectedScale);
         //ファイルに出力するstringデータを格納する配列を初期化
         map_data_list_ = new string[number_of_grid_];
         DrawGrid();
@@ -92,10 +91,9 @@ public class MapCreateEditor : EditorWindow {
         for (int i = 0; i < number_of_grid_; i++)
         {
              /*
-             * Rectの生成位置が上限幅を超過している場合にグリッドの描画する行をリセット（次の行へ）
+             * グリッドの列数を数え、指定した列数で改行
              */
-            //if (x > mapsize_x_)
-            if (i % ((ObjCreateEditor)parent_window_).CountOfGridX == 0)
+            if (i != 0 && i % ((ObjCreateEditor)parent_window_).CountOfGridX == 0)
             {
                 x = default_x;
                 y += h;
@@ -163,7 +161,9 @@ public class MapCreateEditor : EditorWindow {
         EditorUtility.DisplayDialog("MapCreater", "ファイルを出力しました。\n" + path, "ok");
     }
 
-    //マップデータをStringデータにして返す
+    //map_data_list_に格納している文字列をファイル出力用の配列に格納
+    //ファイル出力のためにカンマや改行を追加していく
+    //※後程検討：最初からファイル出力用のFMTにしておけばよいのでは？
     private string GetMapStrFormat()
     {
         string result = "";
@@ -194,24 +194,24 @@ public class MapCreateEditor : EditorWindow {
         //ファイルに出力
         OutputFile();
         
-        //テキストファイルのカンマで区切られた文字列を格納するリスト
-        obj_str_list = new List<string>();
-
         //テキストファイルからreaderにデータを取得
         TextAsset text_asset = new TextAsset();
         text_asset = Resources.Load("Output/output_file") as TextAsset;
         //string str_map_data = text_asset.text;
         var reader = new StringReader(text_asset.text);
 
-        GameObject parent_empty_obj = new GameObject("ParentObj");  //生成したオブジェクトを格納しておく空オブジェクト
-        float poz_x = 0;                                        //オブジェクト生成の初期位置
-        float poz_z = 0;                                        //オブジェクト生成の初期位置
+        GameObject parent_empty_obj = new GameObject("ParentObj");  //生成したオブジェクトを格納しておく空オブジェクトを生成
+        float poz_x = 0;                                            //オブジェクト生成の初期位置
+        float poz_z = 0;                                            //オブジェクト生成の初期位置
 
         //readerから取得したデータをリストに格納する
+        //一行ずつ順番実行：文字列データを吸い出し⇒オブジェクトを生成を行う
         while (reader.Peek() >  -1)
         {
             //行を取り出し、カンマで区切られた文字列をリストに格納
+            //一行取り出し
             var line_data = reader.ReadLine();
+            //取り出した行からカンマで区切られた文字列を１つずつ配列に格納
             var obj_str = line_data.Split(',');
 
             //x 座標を初期化
@@ -229,7 +229,7 @@ public class MapCreateEditor : EditorWindow {
                 //x座標をインクリメント
                 poz_x += spaceScale.x;
             }
-            //z座標をインクリメント
+            //z座標をインクリメント（次の行の処理に移る準備）
             poz_z += spaceScale.z;
         }
     }

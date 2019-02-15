@@ -16,6 +16,7 @@ public class ObjCreateEditor : EditorWindow {
     private Texture selected_tex_;
     private int count_of_grid_x_;
     private int count_of_grid_y_;
+    private float selected_scale_;
 
     /*
      * グリッド数を選択するポップアップUI用の配列
@@ -28,6 +29,14 @@ public class ObjCreateEditor : EditorWindow {
      */
     public Texture SelectedTex{
         get{return selected_tex_;}
+    }
+
+    public float SelectedScale
+    {
+        get
+        {
+            return selected_scale_;
+        }
     }
 
     public int CountOfGridX    
@@ -59,6 +68,15 @@ public class ObjCreateEditor : EditorWindow {
         DrawImgs();
 
         EditorGUILayout.Space();
+
+        /*
+         * マップエディターの1グリッドに対応するゲームビュー上の正方形のスペースの一辺の長さ
+         */
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            GUILayout.Label("１グリッドあたりのスケール:");
+            selected_scale_ = EditorGUILayout.FloatField(selected_scale_);
+        }
 
         /*
          * グリッド数を選択するポップアップ
