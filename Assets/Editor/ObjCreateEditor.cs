@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class ObjCreateEditor : EditorWindow{
+public class ObjCreateEditor : EditorWindow {
 
     private float x_poz_;
     private float y_poz_;
@@ -13,7 +13,22 @@ public class ObjCreateEditor : EditorWindow{
     private Texture tex_;
 
     private GameObject selected_object_;
-    public Texture selected_tex_;
+    private Texture selected_tex_;
+    private int count_of_grid_x_;
+    private int count_of_grid_y_;
+
+    /*
+     * グリッド数を選択するポップアップUI用の配列
+     */
+    private string[] grid_value_str_list_ = new string[]{"2","4","6","8","10"};
+    private int[] grid_value_list_ = new int[] {2,4,6,8,10};
+
+    /*
+     * 初期画面で選択した画像を保持しておく変数（MapCreate画面でグリッドに挿入する画像）
+     */
+    public Texture SelectedTex{
+        get{return selected_tex_;}
+    }
 
     [UnityEditor.MenuItem("Editor/ObjCreateEditor")]
     private static void Create()
@@ -27,6 +42,22 @@ public class ObjCreateEditor : EditorWindow{
 
         DrawImgs();
 
+        EditorGUILayout.Space();
+
+        /*
+         * グリッド数を選択するポップアップ
+         */
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            GUILayout.Label("グリッド数（X）:");
+            count_of_grid_x_ = EditorGUILayout.IntPopup(count_of_grid_x_, grid_value_str_list_, grid_value_list_);
+        }
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            GUILayout.Label("グリッド数（Y）:");
+            count_of_grid_y_ = EditorGUILayout.IntPopup(count_of_grid_y_, grid_value_str_list_, grid_value_list_);
+        }
+
         /*
          * マップエディター 
          */
@@ -34,43 +65,6 @@ public class ObjCreateEditor : EditorWindow{
         {
             MapCreateEditor.ShowWindow(this);
         }
-
-        //EditorGUILayout.Space();
-
-    }
-
-    private void ObjCreate()
-    {
-        GUILayout.Label("個別オブジェクト生成");
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            GUILayout.Label("生成オブジェクト:", GUILayout.Width(100));
-            instantiated_object_ = EditorGUILayout.ObjectField(instantiated_object_, typeof(GameObject)) as GameObject;
-        }
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            GUILayout.Label("X:", GUILayout.Width(100));
-            x_poz_ = EditorGUILayout.FloatField(x_poz_);
-        }
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            GUILayout.Label("y:", GUILayout.Width(100));
-            y_poz_ = EditorGUILayout.FloatField(y_poz_);
-        }
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            GUILayout.Label("z:", GUILayout.Width(100));
-            z_poz_ = EditorGUILayout.FloatField(z_poz_);
-        }
-
-        if (GUILayout.Button("オブジェクト生成"))
-        {
-            instantiate_poz_.x = x_poz_;
-            instantiate_poz_.y = y_poz_;
-            instantiate_poz_.z = z_poz_;
-            GameObject new_object = Instantiate(instantiated_object_, instantiate_poz_, Quaternion.identity) as GameObject;
-        }
-        EditorGUILayout.Space();
     }
 
     void DrawImgs()
@@ -111,6 +105,7 @@ public class ObjCreateEditor : EditorWindow{
         GUILayout.EndHorizontal();
     }
 }
+
 
 ///*
 // *ランダムオブジェクト生成 

@@ -133,10 +133,10 @@ public class MapCreateEditor : EditorWindow {
                         /*
                          * マップデータを格納している配列に選択している画像名を格納
                          */ 
-                        if (((ObjCreateEditor)parent_window_).selected_tex_ != null)
+                        if (((ObjCreateEditor)parent_window_).SelectedTex != null)
                         {
                             //Debug.Log("Rect:" + i + "をクリックしたよ！");
-                            map_data_list_[i] = ((ObjCreateEditor)parent_window_).selected_tex_.name;
+                            map_data_list_[i] = ((ObjCreateEditor)parent_window_).SelectedTex.name;
                         }
                     }
                 }
