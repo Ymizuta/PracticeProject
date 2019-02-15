@@ -30,6 +30,8 @@ public class MapCreateEditor : EditorWindow {
 
     void Init()
     {
+        number_of_grid_ = ((ObjCreateEditor)parent_window_).CountOfGridX
+            * ((ObjCreateEditor)parent_window_).CountOfGridY;
         map_data_list_ = new string[number_of_grid_];
         DrawGrid();
     }
@@ -87,10 +89,11 @@ public class MapCreateEditor : EditorWindow {
         GUILayout.BeginHorizontal();
         for (int i = 0; i < number_of_grid_; i++)
         {
-            /*
+             /*
              * Rectの生成位置が上限幅を超過している場合にグリッドの描画する行をリセット（次の行へ）
              */
-            if (x > mapsize_x_)
+            //if (x > mapsize_x_)
+            if (i % ((ObjCreateEditor)parent_window_).CountOfGridX == 0)
             {
                 x = default_x;
                 y += h;
@@ -100,7 +103,7 @@ public class MapCreateEditor : EditorWindow {
 
             /*
              * Rectを配列に格納・mapデータ配列に格納
-             */ 
+             */
             rect_list_[i] = new Rect(new Vector2(x, y), new Vector2(w, h));
             map_data_list_[i] = "";
 

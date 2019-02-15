@@ -30,6 +30,22 @@ public class ObjCreateEditor : EditorWindow {
         get{return selected_tex_;}
     }
 
+    public int CountOfGridX    
+    {
+        get
+        {
+            return count_of_grid_x_;
+        }
+    }
+
+    public int CountOfGridY
+    {
+        get
+        {
+            return count_of_grid_y_;
+        }
+    }
+
     [UnityEditor.MenuItem("Editor/ObjCreateEditor")]
     private static void Create()
     {
