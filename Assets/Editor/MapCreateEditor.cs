@@ -164,18 +164,17 @@ public class MapCreateEditor : EditorWindow {
     private string GetMapStrFormat()
     {
         string result = "";
-        int map_size = 7;
         for (int i = 0; i < number_of_grid_; i++)
         {
             result += map_data_list_[i];
             //カンマを追記
-            if ((i + 1 )% map_size != 0)
+            if ((i + 1 )% ((ObjCreateEditor)parent_window_).CountOfGridX != 0)
             {
                 result += ",";
             }
 
             //改行
-            if ((i + 1 )% map_size  == 0)
+            if ((i + 1 )% ((ObjCreateEditor)parent_window_).CountOfGridX == 0)
             {
                 result += "\n";
             }
