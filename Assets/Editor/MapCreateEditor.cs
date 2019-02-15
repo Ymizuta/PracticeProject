@@ -30,8 +30,10 @@ public class MapCreateEditor : EditorWindow {
 
     void Init()
     {
+        //グリッド数を計算
         number_of_grid_ = ((ObjCreateEditor)parent_window_).CountOfGridX
             * ((ObjCreateEditor)parent_window_).CountOfGridY;
+        //ファイルに出力するstringデータを格納する配列を初期化
         map_data_list_ = new string[number_of_grid_];
         DrawGrid();
     }
@@ -122,9 +124,10 @@ public class MapCreateEditor : EditorWindow {
          * クリックしたRectの位置を検索
          */
         Event e = Event.current;
-        if (e.type == EventType.MouseDown)
-        {
-            Vector2 mouse_poz = Event.current.mousePosition;
+        //if (e.type == EventType.MouseDown)
+        if (e.type == EventType.MouseDrag || e.type == EventType.MouseDown)
+            {
+                Vector2 mouse_poz = Event.current.mousePosition;
             for (int i = 0; i < number_of_grid_; i++)
             {
                 //クリックした位置のx座標の位置がRectの位置に該当するかを検索
