@@ -14,7 +14,10 @@ public class MapCreateEditor : EditorWindow {
     Rect[] rect_list_;
     string[] map_data_list_;    //位置情報を格納
 
-    List<string[]> obj_str_list;
+    List<string> obj_str_list;  //不要？
+
+    public Vector3 spaceScale = new Vector3(5.0f,0f,-5.0f);  //スケール
+
 
     private static EditorWindow parent_window_;
 
@@ -127,10 +130,12 @@ public class MapCreateEditor : EditorWindow {
                     //クリックした位置のy座標の位置がRectの位置に該当するかを検索
                     if (rect_list_[i].y <= mouse_poz.y && mouse_poz.y < rect_list_[i].y + h)
                     {
-                        //画像をRectに挿入
+                        /*
+                         * マップデータを格納している配列に選択している画像名を格納
+                         */ 
                         if (((ObjCreateEditor)parent_window_).selected_tex_ != null)
                         {
-                            Debug.Log("Rect:" + i + "をクリックしたよ！");
+                            //Debug.Log("Rect:" + i + "をクリックしたよ！");
                             map_data_list_[i] = ((ObjCreateEditor)parent_window_).selected_tex_.name;
                         }
                     }
@@ -139,12 +144,10 @@ public class MapCreateEditor : EditorWindow {
         }
     }
 
-    // ファイルで出力
-
     private void OutputFile()
     {
+        //※後で、ファイル名を指定できるように修正する
         string path = "Assets/Resources/Output/output_file.txt";
-        //FileInfo fileInfo = new FileInfo(path);
         StreamWriter sw = new StreamWriter(path,false);
         sw.WriteLine(GetMapStrFormat());
         sw.Flush();
@@ -183,8 +186,11 @@ public class MapCreateEditor : EditorWindow {
      */ 
     private void CreateObjectFromMapData()
     {
+        //ファイルに出力
+        OutputFile();
+        
         //テキストファイルのカンマで区切られた文字列を格納するリスト
-        obj_str_list = new List<string[]>();
+        obj_str_list = new List<string>();
 
         //テキストファイルからreaderにデータを取得
         TextAsset text_asset = new TextAsset();
@@ -192,17 +198,34 @@ public class MapCreateEditor : EditorWindow {
         //string str_map_data = text_asset.text;
         var reader = new StringReader(text_asset.text);
 
+        GameObject parent_empty_obj = new GameObject("ParentObj");  //生成したオブジェクトを格納しておく空オブジェクト
+        float poz_x = 0;                                        //オブジェクト生成の初期位置
+        float poz_z = 0;                                        //オブジェクト生成の初期位置
+
         //readerから取得したデータをリストに格納する
         while (reader.Peek() >  -1)
         {
             //行を取り出し、カンマで区切られた文字列をリストに格納
             var line_data = reader.ReadLine();
             var obj_str = line_data.Split(',');
-            //各行のカンマで区切られた文字列をリストに格納
+
+            //x 座標を初期化
+            poz_x = 0;    //オブジェクト生成の初期位置
+
             foreach (var s in obj_str)
             {
-                obj_str_list.Add(obj_str);
+                if (s != "")
+                {
+                    Vector3 obj_poz = new Vector3(poz_x,0,poz_z);
+                    GameObject obj = Instantiate(Resources.Load("Prefab/"+s),obj_poz,Quaternion.identity) as GameObject;
+                    //まとめて管理用に空のオブジェクトに格納
+                    obj.transform.parent = parent_empty_obj.transform;
+                }
+                //x座標をインクリメント
+                poz_x += spaceScale.x;
             }
+            //z座標をインクリメント
+            poz_z += spaceScale.z;
         }
     }
 
