@@ -19,6 +19,8 @@ public class MapCreateEditor : EditorWindow {
 
     private static EditorWindow parent_window_;
 
+    Dictionary<string, GameObject> obj_dict_ = new Dictionary<string, GameObject>();
+
     public static void ShowWindow(EditorWindow parent_window)
     {
         MapCreateEditor window = EditorWindow.GetWindow<MapCreateEditor>("MapWindow");
@@ -208,7 +210,9 @@ public class MapCreateEditor : EditorWindow {
         //一行ずつ順番実行：文字列データを吸い出し⇒オブジェクトを生成を行う
         while (reader.Peek() >  -1)
         {
-            //行を取り出し、カンマで区切られた文字列をリストに格納
+            /*
+             * 行を取り出し、カンマで区切られた文字列をリストに格納
+             */
             //一行取り出し
             var line_data = reader.ReadLine();
             //取り出した行からカンマで区切られた文字列を１つずつ配列に格納
@@ -222,7 +226,11 @@ public class MapCreateEditor : EditorWindow {
                 if (s != "")
                 {
                     Vector3 obj_poz = new Vector3(poz_x,0,poz_z);
-                    GameObject obj = Instantiate(Resources.Load("Prefab/"+s),obj_poz,Quaternion.identity) as GameObject;
+                    if (!obj_dict_.ContainsKey(s))
+                    {
+                        obj_dict_[s] = Resources.Load("Prefab/" + s) as GameObject;
+                    }
+                    GameObject obj = Instantiate(obj_dict_[s], obj_poz, Quaternion.identity);
                     //まとめて管理用に空のオブジェクトに格納
                     obj.transform.parent = parent_empty_obj.transform;
                 }
