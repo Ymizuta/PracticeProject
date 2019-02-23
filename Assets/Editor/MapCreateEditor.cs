@@ -13,8 +13,9 @@ public class MapCreateEditor : EditorWindow {
     int number_of_grid_ = 35;   //グリッドの総数
     Rect[] rect_list_;          //生成したグリッドを格納
     string[] map_data_list_;    //ファイル出力用のstring型配列
+    static readonly string path = "Assets/Resources/Output/output_file.txt";
 
-    public Vector3 spaceScale;//スケール
+    public Vector3 spaceScale;  //スケール
 
     private static EditorWindow parent_window_;
 
@@ -151,7 +152,6 @@ public class MapCreateEditor : EditorWindow {
     private void OutputFile()
     {
         //※後で、ファイル名を指定できるように修正する
-        string path = "Assets/Resources/Output/output_file.txt";
         StreamWriter sw = new StreamWriter(path,false);
         sw.WriteLine(GetMapStrFormat());
         sw.Flush();
@@ -230,7 +230,8 @@ public class MapCreateEditor : EditorWindow {
                 poz_x += spaceScale.x;
             }
             //z座標をインクリメント（次の行の処理に移る準備）
-            poz_z += spaceScale.z;
+            //マップエディター上での手前のグリッド・行はゲームビュー上のZ軸ではマイナス方向のため減算
+            poz_z -= spaceScale.z;
         }
     }
 
