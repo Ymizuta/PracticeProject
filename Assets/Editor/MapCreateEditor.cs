@@ -14,12 +14,10 @@ public class MapCreateEditor : EditorWindow {
     Rect[] rect_list_;          //生成したグリッドを格納
     string[] map_data_list_;    //ファイル出力用のstring型配列
     static readonly string path = "Assets/Resources/Output/output_file.txt";
-
-    public Vector3 spaceScale;  //スケール
-
+    public Vector3 spaceScale;                      //スケール
     private static EditorWindow parent_window_;
-
-    Dictionary<string, GameObject> obj_dict_ = new Dictionary<string, GameObject>();
+    Dictionary<string, GameObject> obj_dict_ 
+        = new Dictionary<string, GameObject>();    //生成用オブジェクトのディクショナリ
 
     public static void ShowWindow(EditorWindow parent_window)
     {
