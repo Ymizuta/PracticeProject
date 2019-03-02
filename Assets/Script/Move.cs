@@ -27,12 +27,10 @@ public class Move : MonoBehaviour {
         if (Input.GetMouseButtonDown(1))
         {
             Debug.Log("right");
-            transform.eulerAngles = new Vector3(0,transform. ,0);
         }
         else if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("left");
-            transform.rotation = Quaternion.AngleAxis(transform.rotation.y - 90, Vector3.up);
         }
     }
 
